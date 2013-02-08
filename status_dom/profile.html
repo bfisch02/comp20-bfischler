@@ -5,6 +5,29 @@
 
 <head>
 <title>Fecesbook</title>
+
+<script>
+function checkText(val)
+{
+	now = new Date();
+	var myMessage = 
+		now.getMonth()  + "/" +
+		now.getDay() + "/" +
+		now.getFullYear() + " " +
+		now.getHours() + ":" +
+		now.getMinutes() + " - " +
+		val;
+		
+	var newItem = document.createElement("p");
+	var textnode=document.createTextNode(myMessage);
+		
+		newItem.appendChild(textnode);
+		var messages=document.getElementById("status")
+		messages.insertBefore(newItem, messages.childNodes[0]);
+}
+
+</script>
+
 </head>
 
 <body>
@@ -21,10 +44,13 @@
 	</div>
 	<h2 id="fullname">Barney Gumble</h2>
 	<p><img src="https://s3.amazonaws.com/tufts-cs-mchow-images/barneymug.gif" alt="profile" /></p>
-	<h3>What are you thinking about? <input type="text" id="msg" name="msg" size="30" /></h3>
-	<h3>Updates</h3>
+	<h3>What are you thinking about? <input type="text" id="msg" name="msg" size="30" 
+	    onchange = "checkText(this.value)"/></h3>
+	<h3 id=myUpdates>Updates</h3>
+	
 	<div id="status">
 	</div>
+	
 	<div id="yesterday">
 		<h3>Updates from yesterday:</h3>
 		<ul>
