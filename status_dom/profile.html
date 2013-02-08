@@ -11,9 +11,9 @@ function checkText(val)
 {
 	now = new Date();
 	var myMessage = 
-		now.getMonth()  + "/" +
-		now.getDay() + "/" +
-		now.getFullYear() + " " +
+		(now.getUTCMonth()+1)  + "/" +
+		now.getUTCDate() + "/" +
+		now.getUTCFullYear() + " " +
 		now.getHours() + ":" +
 		now.getMinutes() + " - " +
 		val;
