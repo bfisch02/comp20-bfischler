@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 
 <html>
@@ -17,10 +16,10 @@ function checkText(val)
 		now.getHours() + ":" +
 		now.getMinutes() + " - " +
 		val;
-		
+
 	var newItem = document.createElement("p");
 	var textnode=document.createTextNode(myMessage);
-		
+
 		newItem.appendChild(textnode);
 		var messages=document.getElementById("status")
 		messages.insertBefore(newItem, messages.childNodes[0]);
@@ -47,10 +46,10 @@ function checkText(val)
 	<h3>What are you thinking about? <input type="text" id="msg" name="msg" size="30" 
 	    onchange = "checkText(this.value)"/></h3>
 	<h3 id=myUpdates>Updates</h3>
-	
+
 	<div id="status">
 	</div>
-	
+
 	<div id="yesterday">
 		<h3>Updates from yesterday:</h3>
 		<ul>
