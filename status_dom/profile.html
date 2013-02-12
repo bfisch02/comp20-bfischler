@@ -9,7 +9,7 @@
 function checkText(val)
 {
 	now = new Date();
-	var myMessage = 
+	myMessage = 
 		(now.getUTCMonth()+1)  + "/" +
 		now.getUTCDate() + "/" +
 		now.getUTCFullYear() + " " +
@@ -17,11 +17,11 @@ function checkText(val)
 		now.getMinutes() + " - " +
 		val;
 
-	var newItem = document.createElement("p");
-	var textnode=document.createTextNode(myMessage);
+	newItem = document.createElement("p");
+	textnode=document.createTextNode(myMessage);
 
 		newItem.appendChild(textnode);
-		var messages=document.getElementById("status")
+		messages=document.getElementById("status")
 		messages.insertBefore(newItem, messages.childNodes[0]);
 }
 
