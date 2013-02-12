@@ -17,13 +17,13 @@ function start_game() {
                 
                 
                 ctx.fillStyle = '#191970';
-                ctx.fillRect(0,0,399,270);
+                ctx.fillRect(0,0,399,290);
                 ctx.fillStyle = '#000000';
-                ctx.fillRect(0,270,399,300);
+                ctx.fillRect(0,275,399,300);
                 img = new Image();
                 img.src = 'assets/frogger_sprites.png';
                 ctx.drawImage(img, 0, 0, 399, 113, 0, 0, 399, 113);
-                ctx.drawImage(img, 0, 116, 399, 36, 0, 260, 399, 36);
+                ctx.drawImage(img, 0, 116, 399, 36, 0, 267, 399, 36);
                 ctx.drawImage(img, 0, 116, 399, 36, 0, 490, 399, 36);
                 
                 
