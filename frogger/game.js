@@ -1,15 +1,10 @@
 function start_game() {
-	my_level = 1;
-	my_score = 0;    
-	high_score = 0;
-	remaining_lives = 3; 
-    timer = 0;       
-    canvas = document.getElementById('game');
+	canvas = document.getElementById('game');
     if (canvas.getContext) {
     	ctx = canvas.getContext('2d');
         ctx.save();
-          
-        start_animation();
+        
+        initialize_game();
     }
     
     else {
@@ -17,16 +12,32 @@ function start_game() {
 	}
 }
 
+
+function initialize_game()
+{
+	my_level = 1;
+	my_score = 0;    
+	high_score = 0;
+	remaining_lives = 3; 
+    timer = 0;   
+    frog_x = 175;
+    frog_y = 498; 
+    game_over = false;
+    canvas = document.getElementById('game');
+    
+    start_animation();
+}
+    
 function start_animation()
 {
-	delay = 40; // milliseconds
+	delay = 50; // milliseconds
     setInterval(draw_image, delay); // draw refers to the function  
 
 }     
   
 function draw_image()
 {
-	timer ++;
+	timer = timer + .05;
 	ctx.clearRect(0,0,canvas.width,canvas.height);
  		ctx.fillStyle = '#191970';
         ctx.fillRect(0,0,399,290); 
@@ -43,7 +54,7 @@ function draw_image()
     if (remaining_lives > 2)
         ctx.drawImage(img, 8, 326, 24, 27, 24, 528, 15, 16.875);
     
-    ctx.drawImage(img, 10, 366, 27, 22, 175, 498, 27, 22);
+    ctx.drawImage(img, 10, 366, 27, 22, frog_x, frog_y, 27, 22);
     ctx.drawImage(img, 5, 226, 90, 30, 0, 210, 90, 30);
     ctx.drawImage(img, 80, 262, 31, 29, 175, 458, 31, 29);
     ctx.drawImage(img, 44, 262, 31, 29, 175, 350, 31, 29);
