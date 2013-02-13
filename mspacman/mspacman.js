@@ -4,11 +4,13 @@ function start_game()
 	if (canvas.getContext) 
 	{
 		ctx = canvas.getContext('2d');
+		ctx.save();
 		img = new Image();
-            img.src = 'mspacman/pacman10-hp-sprite.png';
-            ctx.drawImage(img, 0, 0, 138, 464, 0, 0, 138, 464);
-   //         ctx.drawImage(img, 0, 116, 399, 36, 0, 275, 399, 36);
-     //       ctx.drawImage(img, 0, 116, 399, 36, 0, 490, 399, 36);
+		
+            img.src = 'pacman10-hp-sprite.png';
+            ctx.drawImage(img, 322, 0, 464, 138, 0, 0, 464, 138);
+            ctx.drawImage(img, 81, 22, 17, 17, 280, 117, 17, 17);
+            ctx.drawImage(img, 82, 82, 17, 17, 280, 54, 17, 17);
        //     ctx.drawImage(img, 8, 326, 24, 27, 0, 528, 15, 16.875);
 	
 	
