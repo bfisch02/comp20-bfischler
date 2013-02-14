@@ -20,8 +20,18 @@ function initialize_game()
 	high_score = 0;
 	remaining_lives = 3; 
     timer = 0;   
-    frog_x = 175;
-    frog_y = 498; 
+    frog_xStart = 175;
+    frog_yStart = 498; 
+    carOneSpeed = 0; //(px/s)
+    carTwoSpeed = 0;
+    carThreeSpeed = 0;
+    carFourSpeed = 0;
+    carFiveSpeed = 0;
+    logOneSpeed = 0;
+    logTwoSpeed = 0;
+    logThreeSpeed = 0;
+    turtleOneSpeed = 0;
+    turtleTwoSpeed = 0;
     game_over = false;
     canvas = document.getElementById('game');
     
@@ -54,10 +64,10 @@ function draw_image()
     if (remaining_lives > 2)
         ctx.drawImage(img, 8, 326, 24, 27, 24, 528, 15, 16.875);
     
-    ctx.drawImage(img, 10, 366, 27, 22, frog_x, frog_y, 27, 22);
-    ctx.drawImage(img, 5, 226, 90, 30, 0, 210, 90, 30);
-    ctx.drawImage(img, 80, 262, 31, 29, 175, 458, 31, 29);
-    ctx.drawImage(img, 44, 262, 31, 29, 175, 350, 31, 29);
+    ctx.drawImage(img, 10, 366, 27, 22, frog_xStart, frog_yStart, 27, 22);
+    ctx.drawImage(img, 5, 226, 90, 30, logOneSpeed*timer, 210, 90, 30);
+    ctx.drawImage(img, 80, 262, 31, 29, 175-carOneSpeed*timer, 458, 31, 29);
+    ctx.drawImage(img, 44, 262, 31, 29, 175+carTwoSpeed*timer, 350, 31, 29);
     // ctx.drawImage(img, 5, 226, 90, 30, 0, 240, 90, 30);
     
     ctx.fillStyle="rgb(0, 255, 0)";
