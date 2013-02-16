@@ -22,12 +22,12 @@ function initialize_game()
     timer = 0;   
     frog_xStart = 175;
     frog_yStart = 498; 
-    carOneSpeed = 0; //(px/s)
-    carTwoSpeed = 0;
+    carOneSpeed = 300; //(px/s)
+    carTwoSpeed = 100;
     carThreeSpeed = 0;
     carFourSpeed = 0;
     carFiveSpeed = 0;
-    logOneSpeed = 0;
+    logOneSpeed = 200;
     logTwoSpeed = 0;
     logThreeSpeed = 0;
     turtleOneSpeed = 0;
@@ -40,14 +40,14 @@ function initialize_game()
     
 function start_animation()
 {
-	delay = 50; // milliseconds
+	delay = 1; // milliseconds
     setInterval(draw_image, delay); // draw refers to the function  
 
 }     
   
 function draw_image()
 {
-	timer = timer + .05;
+	timer = timer + .001;
 	ctx.clearRect(0,0,canvas.width,canvas.height);
  		ctx.fillStyle = '#191970';
         ctx.fillRect(0,0,399,290); 
@@ -65,9 +65,9 @@ function draw_image()
         ctx.drawImage(img, 8, 326, 24, 27, 24, 528, 15, 16.875);
     
     ctx.drawImage(img, 10, 366, 27, 22, frog_xStart, frog_yStart, 27, 22);
-    ctx.drawImage(img, 5, 226, 90, 30, logOneSpeed*timer, 210, 90, 30);
-    ctx.drawImage(img, 80, 262, 31, 29, 175-carOneSpeed*timer, 458, 31, 29);
-    ctx.drawImage(img, 44, 262, 31, 29, 175+carTwoSpeed*timer, 350, 31, 29);
+    ctx.drawImage(img, 5, 226, 90, 30, (logOneSpeed*timer), 210, 90, 30);
+    ctx.drawImage(img, 80, 262, 31, 29, (175-carOneSpeed*timer), 458, 31, 29);
+    ctx.drawImage(img, 44, 262, 31, 29, (175+carTwoSpeed*timer), 350, 31, 29);
     // ctx.drawImage(img, 5, 226, 90, 30, 0, 240, 90, 30);
     
     ctx.fillStyle="rgb(0, 255, 0)";
