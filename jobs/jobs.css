@@ -1,14 +1,10 @@
 table {
 	border: 3px solid black;
-	align: center;
+	
 }
 
 
 th, td {
 	border: 1px solid black;
 	font-size: 20px;
-}
-
-td {
-	font-style: italic;
 }
