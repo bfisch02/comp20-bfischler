@@ -1,0 +1,1 @@
+I completed this assignment in close to three hours. Most of my time was spent figuring out how to create a table using JavaScript, and once I figured this out, styling in CSS was quite simple.
