@@ -1,10 +1,32 @@
+caption {
+	font-size: 1.7em;
+	font: bold;
+	font-family: Roman;
+	text-decoration: underline;
+}
+
 table {
 	border: 3px solid black;
-	
+	margin-left: auto;
+	margin-right: auto;
 }
 
 
 th, td {
-	border: 1px solid black;
-	font-size: 20px;
+	border:1px solid black;
+	font-size: 1.3em;
+	padding:3px 7px 2px 7px;
+}
+
+th {
+	font-size:1.5em;
+	text-align:center;
+	padding-top:5px;
+	padding-bottom:4px;
+	background-color:#303030;
+	color:#ffffff;
+}
+
+.shaded {
+	background-color: #C0C0C0;
 }

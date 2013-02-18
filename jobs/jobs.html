@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 
 <html>
@@ -17,12 +16,13 @@
         
         for (i=0;i<jobs.length;i++)
 		{ 
-
 			company = document.createTextNode(jobs[i].company);
 			loc = document.createTextNode(jobs[i].location);
 			position = document.createTextNode(jobs[i].position);
 			
 			newCompany = document.createElement("tr");
+			if (i%2 != 0)
+				newCompany.setAttribute("class","shaded");			
 			companyName = document.createElement("td");
 			companyName.appendChild(company);
 			companyLocation = document.createElement("td");
@@ -33,13 +33,16 @@
 			newCompany.appendChild(companyLocation);
 			newCompany.appendChild(companyPosition);
 			newTable.appendChild(newCompany);
-			
 		}
 	}
 	
 	function make_table() {
 			
 		newTable = document.createElement("table");
+		title = document.createElement("caption");
+		my_title = document.createTextNode("Friends of Ming Chow Jobs Listing");
+		title.appendChild(my_title);
+		newTable.appendChild(title);
         headers = document.createElement("tr");
         	
         cHeader = document.createTextNode("Company");
