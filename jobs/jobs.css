@@ -11,6 +11,9 @@ table {
 	margin-right: auto;
 }
 
+.title {
+	font-size: 5.0em;
+}
 
 th, td {
 	border:1px solid black;
