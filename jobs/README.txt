@@ -1,1 +1,1 @@
-I completed this assignment in close to three hours. Most of my time was spent figuring out how to create a table using JavaScript, and once I figured this out, styling in CSS was quite simple.
+This assignment took me approximately an hour and a half. It took me a while to read up on AJAX because I wanted to understand the commands I was using, but once I actually began coding, the lab was fairly straightforward.
