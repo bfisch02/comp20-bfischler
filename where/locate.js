@@ -1,100 +1,123 @@
-function load_map()
+function load_map() {
+	
+	var mapOptions = {
+    zoom: 14,
+    center: new google.maps.LatLng(42.39674, -71.121815),
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+	}
+  
+	map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+	
+	add_markers();
+}
+
+function add_markers()
 {
-			var myLat = 0;
-			var myLng = 0;
-			var request = new XMLHttpRequest();
-			var me = new google.maps.LatLng(myLat, myLng);
-			var myOptions = {
-						zoom: 13, // The larger the zoom number, the bigger the zoom
-						center: me,
-						mapTypeId: google.maps.MapTypeId.ROADMAP
-					};
-			var map;
-			var marker;
-			var infowindow = new google.maps.InfoWindow();
-			var places;
-
-			function init()
-			{
-				map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-				getMyLocation();
-			}
-
-			function getMyLocation()
-			{
-				if (navigator.geolocation) { // the navigator.geolocation object is supported on your browser
-					navigator.geolocation.getCurrentPosition(function(position) {
-						myLat = position.coords.latitude;
-						myLng = position.coords.longitude;
-						renderMap();
-					});
-				}
-				else {
-					alert("Geolocation is not supported by your web browser.  What a shame!");
-				}
-			}
-
-			function renderMap()
-			{
-				me = new google.maps.LatLng(myLat, myLng);
-
-				// Update map and go there...
-				map.panTo(me);
-
-				// Create a marker
-				marker = new google.maps.Marker({
-					position: me,
-					title: "Here I Am!"
+	make_array();
+	
+	for (i = 0; i < 41; i++)
+	{
+	marker = new google.maps.Marker({
+					position: new google.maps.LatLng(stations[i].latitude, stations[i].longitude),
+					title: stations[i].stationName
 				});
 				marker.setMap(map);
+	}
 
-				// Open info window on click of marker
-				google.maps.event.addListener(marker, 'click', function() {
-					infowindow.setContent(marker.title);
-					infowindow.open(map, marker);
-				});
-
-				// Calling Google Places API
-				var request = {
-					location: me,
-					radius: '500',
-					types: ['food']
-				};
-				service = new google.maps.places.PlacesService(map);
-				service.search(request, callback);
-			}
-
-			// Taken from http://code.google.com/apis/maps/documentation/javascript/places.html
-			function callback(results, status)
-			{
-				if (status == google.maps.places.PlacesServiceStatus.OK) {
-					alert("Got places back!");
-					places = results;
-					for (var i = 0; i < results.length; i++) {
-						createMarker(results[i]);
-					}
-				}
-			}
-
-			function createMarker(place)
-			{
-				var placeLoc = place.geometry.location;
-				var marker = new google.maps.Marker({
-					map: map,
-					position: place.geometry.location
-				});
-
-				google.maps.event.addListener(marker, 'click', function() {
-					infowindow.close();
-					infowindow.setContent(place.name);
-					infowindow.open(map, this);
-				});
-				}
-
-
-
-make_array();
+	navigator.geolocation.getCurrentPosition(findMe);
+	
+	Waldo_Carmen();
+	
 }
+
+function findMe(pos) {
+	var lat = pos.coords.latitude;
+	var long = pos.coords.longitude;
+	var acc = pos.coords.accuracy;
+
+	marker = new google.maps.Marker({
+					position: new google.maps.LatLng(lat, long),
+					title: "My location"
+				});
+				marker.setMap(map);
+}
+
+function Waldo_Carmen()
+{
+		try {
+  			request = new XMLHttpRequest();
+		}
+
+		catch (ms1) {
+  			try {
+    			request = new ActiveXObject("Msxml2.XMLHTTP");
+  			}
+  
+  			catch (ms2) {
+    			try {
+      				request = new ActiveXObject("Microsoft.XMLHTTP");
+    			}
+    			catch (ex) {
+      				request = null;
+    			}
+ 			}
+		}
+
+		if (request == null) {
+  			alert("Error creating request object --Ajax not supported?");
+		}
+		
+		request.open("GET", "http://messagehub.herokuapp.com/a3.json", true);
+		request.send(null);
+		request.onreadystatechange=callback;
+		
+		
+	
+}
+	
+function callback() {
+	var img;
+	var str;
+
+	if (request.readyState == 4) {
+		str = request.responseText;
+		alert(str);
+		str = JSON.parse(str);
+		
+		try {
+		
+		if (str[0].name = "Waldo") {
+			alert("Good sign");
+			img = 'http://www.manvswebapp.com/wp-content/uploads/2013/01/Waldo-image_approved.jpg';
+		}
+		
+			marker = new google.maps.Marker({
+					position: new google.maps.LatLng(str[0].loc.latitude, str[0].loc.longitude),
+					title: "Secret Location 1",
+					icon: img
+				});
+				marker.setMap(map);
+		}
+		
+		catch(error) {
+		alert("Couldn't find other");
+		}
+		
+		try {
+			marker = new google.maps.Marker({
+					position: new google.maps.LatLng(str[1].loc.latitude, str[1].loc.longitude),
+					title: "Secret Location 2",
+					icon: img
+				});
+				marker.setMap(map);
+		}
+		
+		catch(error) {
+		alert("Couldn't find other");
+		}
+	}
+}
+
 
 function make_array()
 {
@@ -141,6 +164,7 @@ stations = [
 {"platformKey":"RQUAS","stationName":"QUINCY ADAMS","latitude":42.233391,"longitude":-71.007153},
 {"platformKey":"RBRAS","stationName":"BRAINTREE","latitude":42.2078543,"longitude":-71.0011385}
 ]
-
-console.log (stations[0].stationName);
 }
+
+
+
