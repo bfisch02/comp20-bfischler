@@ -1,0 +1,1 @@
+I spent between 10 and 20 hours working on this project. Everything seems to work properly now, except an error is still displayed in the JavaScript console whenever the page containing Waldo and Carmen's whereabouts is not accessible.
