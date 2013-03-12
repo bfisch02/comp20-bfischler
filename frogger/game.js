@@ -1,4 +1,5 @@
-function start_game() {
+function start_game() 
+{
 	canvas = document.getElementById('game');
     if (canvas.getContext) {
     	ctx = canvas.getContext('2d');
@@ -12,7 +13,6 @@ function start_game() {
 	}
 }
 
-
 function initialize_game()
 {
 	my_level = 1;
@@ -20,6 +20,8 @@ function initialize_game()
 	high_score = 0;
 	remaining_lives = 3; 
     timer = 0;
+    death = false;
+    death_time = 0;
     
     frog_x = 185;
     frog_y = 498.5;
@@ -34,6 +36,8 @@ function initialize_game()
     left=false;
     right=false;
     down=false;
+    
+    carDimensions = new Array;
     
     car1 = new Array;
 	car1[0] = 65;
@@ -98,7 +102,7 @@ function initialize_game()
 function start_animation()
 {
 	delay = 33.333; // milliseconds
-	
+	first_run=false;
     setInterval(game_loop, delay); // draw refers to the function  
 
 }     
@@ -106,10 +110,12 @@ function start_animation()
 function game_loop()
 {
 	draw_image();
+	carCollision();
 	
 }
 
-function moveFrog(e) {
+function moveFrog(e) 
+{
   var keyCode = e.keyCode;
   if(keyCode==38 && !incrementLeft && !incrementRight && !incrementDown) {
     incrementUp=true;
@@ -125,11 +131,8 @@ function moveFrog(e) {
   }
 }
 
-
-
 function draw_image()
 {
-	moveCheck();
 	
 	timer = timer + .03;
 	ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -143,19 +146,12 @@ function draw_image()
     ctx.drawImage(img, 0, 0, 399, 113, 0, 0, 399, 113);
     ctx.drawImage(img, 0, 116, 399, 36, 0, 280, 399, 36);
     ctx.drawImage(img, 0, 116, 399, 36, 0, 490, 399, 36);
-    ctx.drawImage(img, 8, 326, 24, 27, 0, 528, 15, 16.875);
+    if (remaining_lives > 0)
+    	ctx.drawImage(img, 8, 326, 24, 27, 0, 528, 15, 16.875);
     if (remaining_lives > 1)
         ctx.drawImage(img, 8, 326, 24, 27, 12, 528, 15, 16.875);
     if (remaining_lives > 2)
         ctx.drawImage(img, 8, 326, 24, 27, 24, 528, 15, 16.875);
-    
-    drawCars(img);
-    
-    drawLogs(img);
-    
-    drawFrog(img);
-    
-    // ctx.drawImage(img, 5, 226, 90, 30, 0, 240, 90, 30);
     
     ctx.fillStyle="rgb(0, 255, 0)";
     ctx.font = "bold 20px arial";
@@ -163,7 +159,40 @@ function draw_image()
     ctx.font = "bold 12px arial";
     ctx.fillText("Score: " + my_score, 0, 562);
     ctx.fillText("High Score: " + high_score, 90, 562);
-                	
+ 
+	drawCars(img);
+    
+    drawLogs(img);
+    
+ 	if (death) {
+		deadFrog = new Image;
+		deadFrog.src = 'assets/dead_frog.png';
+		ctx.drawImage(deadFrog,0,0,30,30, frog_x, frog_y, 30, 30);
+		death_time++;
+		if(death_time > 45) {
+			frog_x=185;
+			frog_y=498.5;
+			death=false;
+			moving=0;
+			incrementUp=false;
+			incrementDown=false;
+			incrementLeft=false;
+			incrementRight=false;
+			up=true;
+			left=false;
+			right=false;
+			down=false;
+			death_time=0;
+			remaining_lives--;
+			if (remaining_lives==0)
+				game_over = true;
+		}
+			
+	}
+	else {
+		moveCheck();
+    	drawFrog(img);
+    }           	
 }
 
 function moveCheck()
@@ -226,31 +255,55 @@ function moveCheck()
 function drawFrog(img)
 {
 	if (up) {
-		if (incrementUp)
+		if (incrementUp) {
 			ctx.drawImage(img, 44, 365, 22, 27, frog_x, frog_y, 22, 27);
-		else
+			frogWidth = 20;
+			frogLength = 22;
+		}
+		else {
 			ctx.drawImage(img, 11, 368, 26, 21, frog_x, frog_y, 26, 21);
+			frogWidth = 24;
+			frogLength = 16;
+		}
 	}
 	
 	else if (right) {
-		if (incrementRight)
+		if (incrementRight) {
 			ctx.drawImage(img, 42, 335, 27, 22, frog_x, frog_y, 27, 22);
-		else
+			frogWidth = 25;
+			frogLength = 17;
+		}
+		else {
 			ctx.drawImage(img, 11, 334, 20, 24, frog_x, frog_y, 20, 24);
+			frogWidth = 21;
+			frogLength = 19;
+		}
 	}
 	
 	else if (left) {
-		if (incrementLeft)
+		if (incrementLeft) {
 			ctx.drawImage(img, 112, 338, 27, 22, frog_x, frog_y, 27, 22);
-		else
+			frogWidth = 25;
+			frogLength = 27;
+		}
+		else {
 			ctx.drawImage(img, 81, 334, 24, 21, frog_x, frog_y, 24, 21);
+			frogWidth = 22;
+			frogLength = 16;
+		}
 	}
 	
 	else if (down ) {
-		if (incrementDown)
+		if (incrementDown) {
 			ctx.drawImage(img, 113, 366, 23, 26, frog_x, frog_y, 23, 26);
-		else
+			frogWidth = 21;
+			frogLength = 21;
+		}
+		else {
 			ctx.drawImage(img, 79, 369, 25, 19, frog_x, frog_y, 25, 19);
+			frogWidth = 23;
+			frogLength = 14;
+		}
 	}
 }
 
@@ -269,25 +322,44 @@ function drawCars(img)
 			car5[i] += 500;
 	}
 
-	ctx.drawImage(img, 80, 262, 31, 29, (car1[0]-carOneSpeed*timer), 458, 31, 29); //carOne
-    ctx.drawImage(img, 80, 262, 31, 29, (car1[1]-carOneSpeed*timer), 458, 31, 29); //carOne
-    ctx.drawImage(img, 80, 262, 31, 29, (car1[2]-carOneSpeed*timer), 458, 31, 29); //carOne
+	ctx.drawImage(img, 81, 264, 30, 27, (car1[0]-carOneSpeed*timer), 458, 30, 27); //carOne
+		carDimensions[0] = [(car1[0]-carOneSpeed*timer), 458, 25, 27];
+    ctx.drawImage(img, 81, 264, 30, 27, (car1[1]-carOneSpeed*timer), 458, 30, 27); //carOne
+    	carDimensions[1] = [(car1[1]-carOneSpeed*timer), 458, 25, 27];
+    ctx.drawImage(img, 81, 264, 30, 27, (car1[2]-carOneSpeed*timer), 458, 30, 27); //carOne
+    	carDimensions[2] = [(car1[2]-carOneSpeed*timer), 458, 25, 27];
+    
     
     ctx.drawImage(img, 8, 299, 29, 25, (car2[0]+carTwoSpeed*timer), 425, 29, 25); //carTwo
+    	carDimensions[3] = [(car2[0]+carTwoSpeed*timer), 425, 29, 25];
     ctx.drawImage(img, 8, 299, 29, 25, (car2[1]+carTwoSpeed*timer), 425, 29, 25); //carTwo
+    	carDimensions[4] = [(car2[1]+carTwoSpeed*timer), 425, 29, 25];
     ctx.drawImage(img, 8, 299, 29, 25, (car2[2]+carTwoSpeed*timer), 425, 29, 25); //carTwo
+    	carDimensions[5] = [(car2[2]+carTwoSpeed*timer), 425, 29, 25];
+    
     
     ctx.drawImage(img, 9, 266, 32, 23, (car3[0]-carThreeSpeed*timer), 393, 32, 23); //carThree
+    	carDimensions[6] = [(car3[0]-carThreeSpeed*timer), 393, 32, 23];
     ctx.drawImage(img, 9, 266, 32, 23, (car3[1]-carThreeSpeed*timer), 393, 32, 23); //carThree
+    	carDimensions[7] = [(car3[1]-carThreeSpeed*timer), 393, 32, 23];
     ctx.drawImage(img, 9, 266, 32, 23, (car3[2]-carThreeSpeed*timer), 393, 32, 23); //carThree
+    	carDimensions[8] = [(car3[2]-carThreeSpeed*timer), 393, 32, 23];
+    
     
     ctx.drawImage(img, 44, 262, 31, 29, (car4[0]+carFourSpeed*timer), 353, 31, 29); //carFour
+    	carDimensions[9] = [(car4[0]+carFourSpeed*timer), 353, 31, 29];
     ctx.drawImage(img, 44, 262, 31, 29, (car4[1]+carFourSpeed*timer), 353, 31, 29); //carFour
+    	carDimensions[10] = [(car4[1]+carFourSpeed*timer), 353, 31, 29];
     ctx.drawImage(img, 44, 262, 31, 29, (car4[2]+carFourSpeed*timer), 353, 31, 29); //carFour
+    	carDimensions[11] = [(car4[2]+carFourSpeed*timer), 353, 31, 29];
+    
     
     ctx.drawImage(img, 104, 300, 51, 22, (car5[0]-carFiveSpeed*timer), 322, 51, 22); //carFive
+    	carDimensions[12] = [(car5[0]-carFiveSpeed*timer), 322, 51, 22];
     ctx.drawImage(img, 104, 300, 51, 22, (car5[1]-carFiveSpeed*timer), 322, 51, 22); //carFive
+    	carDimensions[13] = [(car5[1]-carFiveSpeed*timer), 322, 51, 22];
     ctx.drawImage(img, 104, 300, 51, 22, (car5[2]-carFiveSpeed*timer), 322, 51, 22); //carFive
+    	carDimensions[14] = [(car5[2]-carFiveSpeed*timer), 322, 51, 22];
 }
 
 function drawLogs(img)
@@ -314,6 +386,38 @@ function drawLogs(img)
     ctx.drawImage(img, 4, 196, 121, 24, (log3[2]+logThreeSpeed*timer), 112, 121, 24); //logThree
 }
 
+function carCollision()
+{
+	for (i = 0; i<15; i++) {
+		if (frog_x<carDimensions[i][0] && frog_x+frogWidth > carDimensions[i][0]) {
+			if (frog_y>carDimensions[i][1] && frog_y+frogLength < carDimensions[i][1]+carDimensions[i][3])
+				frogDeath(i + "CASE 1");	
+			else if (frog_y<carDimensions[i][1] && frog_y+frogLength>carDimensions[i][1])
+				frogDeath(i +"CASE 2");
+			else if (frog_y<carDimensions[i][1]+carDimensions[i][3] && frog_y+frogLength>carDimensions[i][1]+carDimensions[i][3])
+				frogDeath(i+"CASE 3");
+		}
+		else if (frog_x>carDimensions[i][0] && frog_x+frogWidth < carDimensions[i][0]+carDimensions[i][2]) {
+			if (frog_y>carDimensions[i][1] && frog_y+frogLength < carDimensions[i][1]+carDimensions[i][3])
+				frogDeath(i+"CASE 4");	
+			else if (frog_y<carDimensions[i][1] && frog_y+frogLength>carDimensions[i][1])
+				frogDeath(i+"CASE 5");
+			else if (frog_y<carDimensions[i][1]+carDimensions[i][3] && frog_y+frogLength>carDimensions[i][1]+carDimensions[i][3])
+				frogDeath(i+"CASE 6");
+		}
+		else if (frog_x<carDimensions[i][0]+carDimensions[i][2] && frog_x+frogWidth > carDimensions[i][0]+carDimensions[i][2]) {
+			if (frog_y>carDimensions[i][1] && frog_y+frogLength < carDimensions[i][1]+carDimensions[i][3])
+				frogDeath(i+"CASE 7");	
+			else if (frog_y<carDimensions[i][1] && frog_y+frogLength>carDimensions[i][1])
+				frogDeath(i+"CASE 8");
+			else if (frog_y<carDimensions[i][1]+carDimensions[i][3] && frog_y+frogLength>carDimensions[i][1]+carDimensions[i][3])
+				frogDeath(i+"CASE 9");
+		}
+	}
+}
 
-
+function frogDeath(string)
+{
+	death=true;
+}
 
