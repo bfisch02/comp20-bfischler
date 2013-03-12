@@ -62,18 +62,18 @@ function initialize_game()
 	
 	log1 = new Array;
 	log1[0] = 65;
-	log1[1] = 175;
-	log1[2] = 285;
+	log1[1] = 215;
+	log1[2] = 435;
     
     log2 = new Array;
-    log2[0] = 65;
-	log2[1] = 175;
-	log2[2] = 285;
+    log2[0] = 15;
+	log2[1] = 255;
+	log2[2] = 495;
 	
 	log3 = new Array;
-    log3[0] = 65;
-	log3[1] = 175;
-	log3[2] = 285;
+    log3[0] = 100;
+	log3[1] = 300;
+	log3[2] = 600;
 	
 	
 	
@@ -82,14 +82,16 @@ function initialize_game()
     carThreeSpeed = 80;
     carFourSpeed = 70;
     carFiveSpeed = 50;
-    logOneSpeed = 65;
-    logTwoSpeed = 0;
-    logThreeSpeed = 0;
+    logOneSpeed = 55;
+    logTwoSpeed = 115;
+    logThreeSpeed = 85;
     turtleOneSpeed = 0;
     turtleTwoSpeed = 0;
     game_over = false;
     canvas = document.getElementById('game');
+    
     document.addEventListener("keydown", moveFrog, false);
+    
     start_animation();
 }
     
@@ -104,6 +106,7 @@ function start_animation()
 function game_loop()
 {
 	draw_image();
+	
 }
 
 function moveFrog(e) {
@@ -134,6 +137,7 @@ function draw_image()
         ctx.fillRect(0,0,399,290); 
         ctx.fillStyle = '#000000';
         ctx.fillRect(0,285,399,300);
+    
 	img = new Image();
     img.src = 'assets/frogger_sprites.png';
     ctx.drawImage(img, 0, 0, 399, 113, 0, 0, 399, 113);
@@ -289,25 +293,25 @@ function drawCars(img)
 function drawLogs(img)
 {
 	for (i = 0; i<3; i++) {
-		if (log1[i] + 120 < logOneSpeed*timer)
-			log1[i] += 550;
+		if (log1[i] + logOneSpeed*timer > 450)
+			log1[i] -= 680;
 		if (log2[i] + logTwoSpeed*timer > 400)
-			log2[i] -= 490;
-		if (log3[i] + 50 < logThreeSpeed*timer)
-			log3[i] += 450;
+			log2[i] -= 720;
+		if (log3[i] +logThreeSpeed*timer > 430)
+			log3[i] -= 700;
 	}
 
-	ctx.drawImage(img, 5, 226, 90, 30, (log1[0]-logOneSpeed*timer), 210, 90, 30); //logOne
-    ctx.drawImage(img, 5, 226, 90, 30, (log1[0]-logOneSpeed*timer), 210, 90, 30); //logOne
-    ctx.drawImage(img, 5, 226, 90, 30, (log1[0]-logOneSpeed*timer), 210, 90, 30); //logOne
+	ctx.drawImage(img, 5, 226, 90, 30, (log1[0]+logOneSpeed*timer), 215, 90, 30); //logOne
+    ctx.drawImage(img, 5, 226, 90, 30, (log1[1]+logOneSpeed*timer), 215, 90, 30); //logOne
+    ctx.drawImage(img, 5, 226, 90, 30, (log1[2]+logOneSpeed*timer), 215, 90, 30); //logOne
     
-    ctx.drawImage(img, 8, 299, 29, 25, (log2[0]+logTwoSpeed*timer), 425, 29, 25); //logTwo
-    ctx.drawImage(img, 8, 299, 29, 25, (log2[1]+logTwoSpeed*timer), 425, 29, 25); //logTwo
-    ctx.drawImage(img, 8, 299, 29, 25, (log2[2]+logTwoSpeed*timer), 425, 29, 25); //logTwo
+    ctx.drawImage(img, 4, 163, 183, 26, (log2[0]+logTwoSpeed*timer), 181, 183, 26); //logTwo
+    ctx.drawImage(img, 4, 163, 183, 26, (log2[1]+logTwoSpeed*timer), 181, 183, 26); //logTwo
+    ctx.drawImage(img, 4, 163, 183, 26, (log2[2]+logTwoSpeed*timer), 181, 183, 26); //logTwo
     
-    ctx.drawImage(img, 9, 266, 32, 23, (log3[0]-logThreeSpeed*timer), 393, 32, 23); //logThree
-    ctx.drawImage(img, 9, 266, 32, 23, (log3[1]-logThreeSpeed*timer), 393, 32, 23); //logThree
-    ctx.drawImage(img, 9, 266, 32, 23, (log3[2]-logThreeSpeed*timer), 393, 32, 23); //logThree
+    ctx.drawImage(img, 4, 196, 121, 24, (log3[0]+logThreeSpeed*timer), 112, 121, 24); //logThree
+	ctx.drawImage(img, 4, 196, 121, 24, (log3[1]+logThreeSpeed*timer), 112, 121, 24); //logThree
+    ctx.drawImage(img, 4, 196, 121, 24, (log3[2]+logThreeSpeed*timer), 112, 121, 24); //logThree
 }
 
 
