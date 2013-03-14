@@ -17,14 +17,26 @@ function checkText(val)
 		now.getMinutes() + " - " +
 		val;
 
-	newItem = document.createElement("p");
-	textnode=document.createTextNode(myMessage);
-
-		newItem.appendChild(textnode);
-		messages=document.getElementById("status")
-		messages.insertBefore(newItem, messages.childNodes[0]);
+	localStorage[new Date().getTime()] = myMessage;
+	reload();
 }
 
+function reload()
+{
+	elem = document.getElementById("status");
+	output = "";
+	for (key in localStorage) {
+		output = "<p>" + localStorage[key] + "</p>\n" + output;
+	}
+	elem.innerHTML = output;
+}
+	
+function store()
+{
+	txt = document.getElementById("something").value;
+	localStorage[new Date().getTime()] = txt;
+	reload();
+}
 </script>
 
 </head>
