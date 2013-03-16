@@ -4,8 +4,9 @@ function start_game()
     if (canvas.getContext) {
     	ctx = canvas.getContext('2d');
 		        ctx.save();
-        
+        high_score = 0;
         initialize_game();
+        start_animation();
     }
     
     else {
@@ -18,10 +19,11 @@ function initialize_game()
 	getImages();
 
 	my_level = 1;
-	my_score = 0;    
-	high_score = 0;
+	my_score = 0;
+	nextExtraLife=10000;
 	remaining_lives = 3; 
     timer = 0;
+	elapsedTime=0;
     death = false;
     death_time = 0;
     victory = false;
@@ -42,6 +44,7 @@ function initialize_game()
 	log3 = new Array;
 	turtle1 = new Array;
 	turtle2 = new Array;
+	victorySquare = new Array;
 	
 	
 	initializeSpeed();
@@ -51,6 +54,7 @@ function initialize_game()
     document.addEventListener("keydown", moveFrog, false);
     
     initialize_level();
+
 }
 
 function initialize_level()
@@ -59,7 +63,18 @@ function initialize_level()
 	initializeLogLocations();
 	initializeTurtleLocations();
 	initializeFrog();
-	start_animation();
+	initializeVictory();
+	if (my_level>1) {
+		carOneSpeed += 20;
+    	carTwoSpeed += 20;
+    	carThreeSpeed += 20;
+    	carFourSpeed += 20;
+    	carFiveSpeed += 20;
+    	logOneSpeed += 20;
+    	logTwoSpeed += 20;
+    	logThreeSpeed += 20;
+    	turtleSpeed += 20;
+    }
 }
 
 function initializeCarLocations()
@@ -130,6 +145,13 @@ function initializeFrog()
     down=false;
 }
 
+function initializeVictory()
+{
+	for (i = 0; i<5; i++)
+		victorySquare[i] = false;
+	victoryCount = 0;
+}
+
 function getImages()
 {
 	img = new Image();
@@ -164,9 +186,18 @@ function game_loop()
 	carCollision();
 	onLogCheck();
 	onTurtleCheck();
+	if (my_score>nextExtraLife && remaining_lives<4) {
+		remaining_lives++;
+		nextExtraLife+=10000;
+	}
 	if (progressUp>6 && logging==false && turtling==false &&!moving && !victory)
 		frogDeath();
-	
+	if (game_over) {
+		alert("GAME OVER");
+		my_level = 1;
+		initialize_game();
+	}
+		
 }
 
 function moveFrog(e) 
@@ -206,19 +237,26 @@ function draw_image()
         ctx.drawImage(img, 8, 326, 24, 27, 12, 528, 15, 16.875);
     if (remaining_lives > 2)
         ctx.drawImage(img, 8, 326, 24, 27, 24, 528, 15, 16.875);
+    if (remaining_lives > 3)
+        ctx.drawImage(img, 8, 326, 24, 27, 36, 528, 15, 16.875);
     
     ctx.fillStyle="rgb(0, 255, 0)";
     ctx.font = "bold 20px arial";
-    ctx.fillText("Level " + my_level, 47, 546);
+    ctx.fillText("Level " + my_level, 57, 546);
+    ctx.fillText("Time", 350, 562);
     ctx.font = "bold 12px arial";
     ctx.fillText("Score: " + my_score, 0, 562);
     ctx.fillText("High Score: " + high_score, 90, 562);
+    
+    drawTimer();
  
 	drawCars(img);
     
     drawLogs(img);
     
     drawTurtles(img);
+    
+    drawVictory(img);
     
     if (victory)
 		victoryHelper();
@@ -227,7 +265,9 @@ function draw_image()
 	else {
 		moveCheck();
     	drawFrog(img);
-    }           	
+    }  
+    if (my_score>high_score)
+		high_score = my_score;       	
 }
 
 function moveCheck()
@@ -296,6 +336,21 @@ function moveCheck()
 
 }
 
+function drawTimer()
+{
+	elapsedTime+=.03;
+	factor=5;
+	if (!death) {
+		if (elapsedTime>20 && (Math.floor(elapsedTime*4))%2==0)
+			ctx.fillStyle="rgb(255, 0, 0)";
+		else
+			ctx.fillStyle="rgb(0, 255, 0)";
+		ctx.fillRect(195+elapsedTime*factor, 547, 150-elapsedTime*factor, 15);
+		if (elapsedTime*factor>=150)
+			frogDeath();
+	}
+}
+
 function drawFrog(img)
 {
 	if (up) {
@@ -349,6 +404,8 @@ function drawFrog(img)
 			frogLength = 14;
 		}
 	}
+	if (frog_x<0 || frog_x>390)
+		frogDeath();
 }
 
 function drawCars(img)
@@ -514,6 +571,15 @@ function drawTurtles(img)
 
 }
 
+function drawVictory(img)
+{
+	for (i=0; i<5; i++){
+		if (victorySquare[i] && !victory)
+			ctx.drawImage(img, 79, 369, 25, 19, 14+85*i, 80, 25, 19);
+	}
+			
+}
+
 function carCollision()
 {
 	for (i = 0; i<15; i++) {
@@ -639,9 +705,10 @@ function victoryCheck()
 	var i = 0;
 	if (progressUp==12 && !moving) {
 		while (i<5 && !victory) {
-			if ((frog_x > 5+84*i) && (frog_x<30+84*i))
+			if ((frog_x > 5+84*i) && (frog_x<30+84*i) && !victorySquare[i]) {
 				victory=true;
-				winLocation = i;
+				victorySquare[i] = true;
+			}
 			i++;
 		}
 	}
@@ -660,21 +727,30 @@ function victoryHelper()
 		victoryLocy=frog_y;
 	}
 
-	if (victoryTime%8<2)
-		ctx.drawImage(img, 11, 368, 26, 21, victoryLocx, victoryLocy, 23, 26);
-	else if (victoryTime%8<4)
-		ctx.drawImage(img, 11, 334, 20, 24, victoryLocx, victoryLocy, 23, 26);
-	else if (victoryTime%8<6)
-		ctx.drawImage(img, 81, 334, 24, 21, victoryLocx, victoryLocy, 23, 26);
-	else
-		ctx.drawImage(img, 79, 369, 25, 19, victoryLocx, victoryLocy, 23, 26);
-		
+	for(i = 0; i<5; i++) {
+		if (victorySquare[i] && victoryTime%8<2)
+			ctx.drawImage(img, 11, 368, 26, 21, 14+85*i, 80, 23, 26);
+		else if (victorySquare[i] && victoryTime%8<4)
+			ctx.drawImage(img, 11, 334, 20, 24, 14+85*i, 80, 23, 26);
+		else if (victorySquare[i] && victoryTime%8<6)
+			ctx.drawImage(img, 81, 334, 24, 21, 14+85*i, 80, 23, 26);
+		else if (victorySquare[i] && victoryTime%8<8)
+			ctx.drawImage(img, 79, 369, 25, 19, 14+85*i, 80, 23, 26);
+	}	
 	victoryTime++;
-	if(victoryTime > 16) {
+	if(victoryTime > 12) {
 		initializeFrog();
+		my_score+=50;
+		my_score+=10*(Math.floor(30-elapsedTime));
 		victory=false;
 		victoryTime=0;
-	}	
+		elapsedTime=0;
+		victoryCount++;
+		if (victoryCount==5) {
+			my_score+=1000;
+			newLevel();
+		}
+	}
 }
 
 function deathHelper()
@@ -691,9 +767,15 @@ function deathHelper()
 		initializeFrog();
 		death=false;
 		death_time=0;
+		elapsedTime = 0;
 		remaining_lives--;
 		if (remaining_lives==0)
 			game_over = true;
 	}
 }
 
+function newLevel()
+{
+	my_level++;
+	initialize_level();
+}
