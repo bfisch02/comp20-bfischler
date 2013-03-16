@@ -64,6 +64,8 @@ function initialize_level()
 	initializeTurtleLocations();
 	initializeFrog();
 	initializeVictory();
+	fly=false;
+	flyCounter=0;
 	if (my_level>1) {
 		carOneSpeed += 20;
     	carTwoSpeed += 20;
@@ -202,20 +204,23 @@ function game_loop()
 
 function moveFrog(e) 
 {
-  //var jumpSound = document.getElementById("jumpSound")
+  var jumpSound = document.getElementById("jumpSound")
   var keyCode = e.keyCode;
   if(keyCode==38 && !incrementLeft && !incrementRight && !incrementDown) {
-  	//jumpSound.Play();
+  	jumpSound.Play();
   	
     incrementUp=true;
   } 
   else if(keyCode==37 && !incrementUp && !incrementRight && !incrementDown && frog_x > 5) {
+ 	jumpSound.Play();
     incrementLeft = true;
   }
   else if(keyCode==39 && !incrementLeft && !incrementUp && !incrementDown && frog_x < 364.5) {
+  	jumpSound.Play();
     incrementRight = true;
   }
   else if(keyCode==40 && !incrementLeft && !incrementRight && !incrementUp && frog_y != 498.5) {
+  	jumpSound.Play();
     incrementDown = true;
   }
 }
@@ -228,7 +233,8 @@ function draw_image()
         ctx.fillRect(0,0,399,290); 
         ctx.fillStyle = '#000000';
         ctx.fillRect(0,285,399,300);
-    ctx.drawImage(img, 0, 0, 399, 113, 0, 0, 399, 113);
+    ctx.drawImage(img, 0, 0, 399, 53, 23, 0, 399, 53);
+    ctx.drawImage(img, 0, 53, 399, 60, 0, 53, 399, 60);
     ctx.drawImage(img, 0, 116, 399, 36, 0, 280, 399, 36);
     ctx.drawImage(img, 0, 116, 399, 36, 0, 490, 399, 36);
     if (remaining_lives > 0)
@@ -257,6 +263,8 @@ function draw_image()
     drawTurtles(img);
     
     drawVictory(img);
+    
+    drawFly(img);
     
     if (victory)
 		victoryHelper();
@@ -580,6 +588,27 @@ function drawVictory(img)
 			
 }
 
+function drawFly(img)
+{
+	var flyHelper=5-victoryCount;
+	if (!fly) {
+			if (Math.floor(Math.random()*1000)>985) {
+			fly=true;
+			flyLocation=Math.floor(Math.random()*flyHelper);
+		}
+	}
+	if (fly) {
+		flyCounter++;
+		ctx.drawImage(img, 138, 234, 20, 20, 14+85*flyLocation, 80, 20, 20);
+		if (flyCounter>200) {
+			fly=false;
+			flyCounter=0;
+		}
+	}
+		
+		
+}
+
 function carCollision()
 {
 	for (i = 0; i<15; i++) {
@@ -708,6 +737,10 @@ function victoryCheck()
 			if ((frog_x > 5+84*i) && (frog_x<30+84*i) && !victorySquare[i]) {
 				victory=true;
 				victorySquare[i] = true;
+				if (fly && flyLocation == i) {
+					fly=false;
+					my_score+=200;
+				}
 			}
 			i++;
 		}
