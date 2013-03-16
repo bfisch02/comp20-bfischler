@@ -7,3 +7,5 @@ In addition to the basic requirements, my Frogger game contains the following im
 4) A fly shows up at random times, and the player earns 200 extra points when Frogger eats it
 
 Overall, I spend between 20 and 30 hours on this assignment.
+
+Note: I hope this isn't a problem, but all of my work was done in my gh-pages branch, so that's where my commits are located. 
