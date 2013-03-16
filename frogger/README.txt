@@ -1,3 +1,9 @@
-So far, the game board has been designed and several key variables have been initialized. A frog has been added, along with two cars and a log. It is also possible to set the speed (in pixels per second) of each car and the log. The keys do not yet control the motion of the frog.
+In addition to the basic requirements, my Frogger game contains the following implementations:
 
-I spent approximately four hours working on this assignment thus far.
+1) A timer has been implemented, giving the player only 30 seconds to reach the end of the screen
+	> The player earns 10 points per remaining second on the timer
+2) Frogger is animated to dead_frog.png if he gets run over by a vehicle, hits water, or misses home
+3) Level progression has been implemented, so each new level contains faster cars, logs, and turtles
+4) A fly shows up at random times, and the player earns 200 extra points when Frogger eats it
+
+Overall, I spend between 20 and 30 hours on this assignment.
