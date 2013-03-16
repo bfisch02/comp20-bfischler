@@ -3,7 +3,7 @@ function start_game()
 	canvas = document.getElementById('game');
     if (canvas.getContext) {
     	ctx = canvas.getContext('2d');
-        ctx.save();
+		        ctx.save();
         
         initialize_game();
     }
@@ -15,6 +15,8 @@ function start_game()
 
 function initialize_game()
 {
+	getImages();
+
 	my_level = 1;
 	my_score = 0;    
 	high_score = 0;
@@ -22,65 +24,120 @@ function initialize_game()
     timer = 0;
     death = false;
     death_time = 0;
+    victory = false;
+    victoryTime = 0;
+    game_over = false;
     
-    frog_x = 185;
+    carDimensions = new Array;
+    logDimensions = new Array;
+    turtleDimensions = new Array;
+	
+	car1 = new Array;
+	car2 = new Array;
+	car3 = new Array;
+	car4 = new Array;
+	car5 = new Array;
+	log1 = new Array;
+    log2 = new Array;
+	log3 = new Array;
+	turtle1 = new Array;
+	turtle2 = new Array;
+	
+	
+	initializeSpeed();
+
+    canvas = document.getElementById('game');
+    
+    document.addEventListener("keydown", moveFrog, false);
+    
+    initialize_level();
+}
+
+function initialize_level()
+{
+	initializeCarLocations();
+	initializeLogLocations();
+	initializeTurtleLocations();
+	initializeFrog();
+	start_animation();
+}
+
+function initializeCarLocations()
+{
+	car1[0] = 65;
+	car1[1] = 175;
+	car1[2] = 285;
+    
+    car2[0] = 35;
+	car2[1] = 155;
+	car2[2] = 275;
+	
+    car3[0] = 165;
+	car3[1] = 275;
+	car3[2] = 385;
+	
+    car4[0] = 105;
+	car4[1] = 215;
+	car4[2] = 325;
+	
+    car5[0] = 15;
+	car5[1] = 165;
+	car5[2] = 315;
+}
+
+function initializeLogLocations()
+{
+	log1[0] = 65;
+	log1[1] = 215;
+	log1[2] = 435;
+	log2[0] = 15;
+	log2[1] = 255;
+	log2[2] = 495;
+	log3[0] = 100;
+	log3[1] = 300;
+	log3[2] = 600;
+}
+
+function initializeTurtleLocations()
+{
+	turtle1[0] = 65;
+	turtle1[1] = 215;
+	turtle1[2] = 365;
+	turtle1[3] = 515;
+	turtle1[4] = 665;
+	turtle2[0] = 15;
+	turtle2[1]= 115;
+	turtle2[2]= 215;
+	turtle2[3]= 315;
+}
+
+function initializeFrog()
+{
+	frog_x = 185;
     frog_y = 498.5;
     
+    progressUp=0;
+    progressUpMax=0;
+    victory=false;
     incrementUp = false;
     incrementLeft = false;
     incrementRight = false;
     incrementDown = false;
     moving = 0;
-    
     up=true;
     left=false;
     right=false;
     down=false;
-    
-    carDimensions = new Array;
-    
-    car1 = new Array;
-	car1[0] = 65;
-	car1[1] = 175;
-	car1[2] = 285;
-    
-    car2 = new Array;
-    car2[0] = 35;
-	car2[1] = 155;
-	car2[2] = 275;
-	
-	car3 = new Array;
-    car3[0] = 165;
-	car3[1] = 275;
-	car3[2] = 385;
-	
-	car4 = new Array;
-    car4[0] = 105;
-	car4[1] = 215;
-	car4[2] = 325;
-	
-	car5 = new Array;
-    car5[0] = 15;
-	car5[1] = 165;
-	car5[2] = 315;
-	
-	log1 = new Array;
-	log1[0] = 65;
-	log1[1] = 215;
-	log1[2] = 435;
-    
-    log2 = new Array;
-    log2[0] = 15;
-	log2[1] = 255;
-	log2[2] = 495;
-	
-	log3 = new Array;
-    log3[0] = 100;
-	log3[1] = 300;
-	log3[2] = 600;
-	
-	
-	
+}
+
+function getImages()
+{
+	img = new Image();
+    img.src = 'assets/frogger_sprites.png';
+}
+
+function initializeSpeed()
+{
 	carOneSpeed = 40; //(px/s)
     carTwoSpeed = 60;
     carThreeSpeed = 80;
@@ -89,20 +146,13 @@ function initialize_game()
     logOneSpeed = 55;
     logTwoSpeed = 115;
     logThreeSpeed = 85;
-    turtleOneSpeed = 0;
-    turtleTwoSpeed = 0;
-    game_over = false;
-    canvas = document.getElementById('game');
-    
-    document.addEventListener("keydown", moveFrog, false);
-    
-    start_animation();
+    turtleSpeed = 80;
 }
-    
+
 function start_animation()
 {
 	delay = 33.333; // milliseconds
-	first_run=false;
+	
     setInterval(game_loop, delay); // draw refers to the function  
 
 }     
@@ -110,14 +160,22 @@ function start_animation()
 function game_loop()
 {
 	draw_image();
+	victoryCheck();
 	carCollision();
+	onLogCheck();
+	onTurtleCheck();
+	if (progressUp>6 && logging==false && turtling==false &&!moving && !victory)
+		frogDeath();
 	
 }
 
 function moveFrog(e) 
 {
+  //var jumpSound = document.getElementById("jumpSound")
   var keyCode = e.keyCode;
   if(keyCode==38 && !incrementLeft && !incrementRight && !incrementDown) {
+  	//jumpSound.Play();
+  	
     incrementUp=true;
   } 
   else if(keyCode==37 && !incrementUp && !incrementRight && !incrementDown && frog_x > 5) {
@@ -133,16 +191,12 @@ function moveFrog(e)
 
 function draw_image()
 {
-	
 	timer = timer + .03;
 	ctx.clearRect(0,0,canvas.width,canvas.height);
  		ctx.fillStyle = '#191970';
         ctx.fillRect(0,0,399,290); 
         ctx.fillStyle = '#000000';
         ctx.fillRect(0,285,399,300);
-    
-	img = new Image();
-    img.src = 'assets/frogger_sprites.png';
     ctx.drawImage(img, 0, 0, 399, 113, 0, 0, 399, 113);
     ctx.drawImage(img, 0, 116, 399, 36, 0, 280, 399, 36);
     ctx.drawImage(img, 0, 116, 399, 36, 0, 490, 399, 36);
@@ -164,31 +218,12 @@ function draw_image()
     
     drawLogs(img);
     
- 	if (death) {
-		deadFrog = new Image;
-		deadFrog.src = 'assets/dead_frog.png';
-		ctx.drawImage(deadFrog,0,0,30,30, frog_x, frog_y, 30, 30);
-		death_time++;
-		if(death_time > 45) {
-			frog_x=185;
-			frog_y=498.5;
-			death=false;
-			moving=0;
-			incrementUp=false;
-			incrementDown=false;
-			incrementLeft=false;
-			incrementRight=false;
-			up=true;
-			left=false;
-			right=false;
-			down=false;
-			death_time=0;
-			remaining_lives--;
-			if (remaining_lives==0)
-				game_over = true;
-		}
-			
-	}
+    drawTurtles(img);
+    
+    if (victory)
+		victoryHelper();
+ 	else if (death)
+		deathHelper();
 	else {
 		moveCheck();
     	drawFrog(img);
@@ -198,6 +233,13 @@ function draw_image()
 function moveCheck()
 {
 	if (incrementUp) {
+		if (!moving) {
+			progressUp++;
+			if (progressUp>progressUpMax) {
+				progressUpMax++;
+				my_score+=10;
+			}
+		}
 		up = true;
 		down = false;
 		left = false;
@@ -237,6 +279,8 @@ function moveCheck()
 	}
 	
 	else if (incrementDown){
+		if (!moving)
+			progressUp--;
 		frog_y != 498.5
 		down = true;
 		up = false;
@@ -322,6 +366,7 @@ function drawCars(img)
 			car5[i] += 500;
 	}
 
+	
 	ctx.drawImage(img, 81, 264, 30, 27, (car1[0]-carOneSpeed*timer), 458, 30, 27); //carOne
 		carDimensions[0] = [(car1[0]-carOneSpeed*timer), 458, 25, 27];
     ctx.drawImage(img, 81, 264, 30, 27, (car1[1]-carOneSpeed*timer), 458, 30, 27); //carOne
@@ -374,16 +419,99 @@ function drawLogs(img)
 	}
 
 	ctx.drawImage(img, 5, 226, 90, 30, (log1[0]+logOneSpeed*timer), 215, 90, 30); //logOne
+		logDimensions[0] = [(log1[0]+logOneSpeed*timer), 215, 90, 30];
     ctx.drawImage(img, 5, 226, 90, 30, (log1[1]+logOneSpeed*timer), 215, 90, 30); //logOne
+    	logDimensions[1] = [(log1[1]+logOneSpeed*timer), 215, 90, 30];
     ctx.drawImage(img, 5, 226, 90, 30, (log1[2]+logOneSpeed*timer), 215, 90, 30); //logOne
-    
+    	logDimensions[2] = [(log1[2]+logOneSpeed*timer), 215, 90, 30];
+    	
     ctx.drawImage(img, 4, 163, 183, 26, (log2[0]+logTwoSpeed*timer), 181, 183, 26); //logTwo
+    	logDimensions[3] = [(log2[0]+logTwoSpeed*timer), 181, 183, 26];
     ctx.drawImage(img, 4, 163, 183, 26, (log2[1]+logTwoSpeed*timer), 181, 183, 26); //logTwo
+    	logDimensions[4] = [(log2[1]+logTwoSpeed*timer), 181, 183, 26];
     ctx.drawImage(img, 4, 163, 183, 26, (log2[2]+logTwoSpeed*timer), 181, 183, 26); //logTwo
+    	logDimensions[5] = [(log2[2]+logTwoSpeed*timer), 181, 183, 26];
     
     ctx.drawImage(img, 4, 196, 121, 24, (log3[0]+logThreeSpeed*timer), 112, 121, 24); //logThree
+    	logDimensions[6] = [(log3[0]+logThreeSpeed*timer), 112, 121, 24];
 	ctx.drawImage(img, 4, 196, 121, 24, (log3[1]+logThreeSpeed*timer), 112, 121, 24); //logThree
+		logDimensions[7] = [(log3[1]+logThreeSpeed*timer), 112, 121, 24];
     ctx.drawImage(img, 4, 196, 121, 24, (log3[2]+logThreeSpeed*timer), 112, 121, 24); //logThree
+    	logDimensions[8] = [(log3[2]+logThreeSpeed*timer), 112, 121, 24];
+}
+
+function drawTurtles(img)
+{
+	var increment = 0;
+	var numTurtle = 0;
+	var i = 0;
+
+	for (k=0; k<750; k+=150) {
+		for (j=0; j<99; j+=35) {
+			increment=0;
+			while (turtle1[0]+j+k+increment-turtleSpeed*timer < -100)
+				increment+=810;
+			if (k!=600) {
+				if ((Math.floor(timer*5))%3 == 0)
+					ctx.drawImage(img, 14, 406, 33, 25, (turtle1[0]+j+k+increment-turtleSpeed*timer), 252, 33, 25); //carOne
+				else if ((Math.floor(timer*5))%3 == 1)
+					ctx.drawImage(img, 54, 406, 33, 25, (turtle1[0]+j+k+increment-turtleSpeed*timer), 252, 33, 25); //carOne
+				else
+					ctx.drawImage(img, 94, 406, 33, 25, (turtle1[0]+j+k+increment-turtleSpeed*timer), 252, 33, 25); //carOne
+				
+			}
+			else {
+				if ((Math.floor(timer*4))%9 == 0)
+				ctx.drawImage(img, 14, 406, 33, 25, (turtle1[0]+j+k+increment-turtleSpeed*timer), 252, 33, 25); //carOne
+				else if ((Math.floor(timer*4))%9 == 1)
+				ctx.drawImage(img, 54, 406, 33, 25, (turtle1[0]+j+k+increment-turtleSpeed*timer), 252, 33, 25); //carOne
+				else if ((Math.floor(timer*4))%9 == 2 )
+				ctx.drawImage(img, 94, 406, 33, 25, (turtle1[0]+j+k+increment-turtleSpeed*timer), 252, 33, 25); //carOne
+				else if ((Math.floor(timer*4))%9 == 3 || (Math.floor(timer*4))%9 == 8)
+				ctx.drawImage(img, 134, 406, 33, 25, (turtle1[0]+j+k+increment-turtleSpeed*timer), 252, 33, 25); //carOne
+				else if ((Math.floor(timer*4))%9 == 4 || (Math.floor(timer*4))%9 == 7)
+				ctx.drawImage(img, 174, 406, 33, 25, (turtle1[0]+j+k+increment-turtleSpeed*timer), 252, 33, 25); //carOne
+				
+			}
+			if(k!=600 || (((Math.floor(timer*4))%9 < 5) || ((Math.floor(timer*4))%9 >6)))
+				turtleDimensions[i]=[(turtle1[0]+k+increment-turtleSpeed*timer), 252, 103, 25];
+		}
+		
+		i++;
+	}
+
+	for (k=0; k<440; k+=110) {
+		for (j=0; j<66; j+=35) {
+			increment=0;
+			while (turtle1[0]+j+k+increment-turtleSpeed*timer < -100)
+				increment+=600;
+			if (k!=0) {
+				if ((Math.floor(timer*5))%3 == 0)
+				ctx.drawImage(img, 14, 406, 33, 25, (turtle1[0]+j+k+increment-turtleSpeed*timer), 147, 33, 25); //carOne
+				else if ((Math.floor(timer*5))%3 == 1)
+				ctx.drawImage(img, 54, 406, 33, 25, (turtle1[0]+j+k+increment-turtleSpeed*timer), 147, 33, 25); //carOne
+				else
+				ctx.drawImage(img, 94, 406, 33, 25, (turtle1[0]+j+k+increment-turtleSpeed*timer), 147, 33, 25); //carOne
+			}
+			else {
+				if ((Math.floor(timer*4))%9 == 0)
+				ctx.drawImage(img, 14, 406, 33, 25, (turtle1[0]+j+k+increment-turtleSpeed*timer), 147, 33, 25); //carOne
+				else if ((Math.floor(timer*4))%9 == 1)
+				ctx.drawImage(img, 54, 406, 33, 25, (turtle1[0]+j+k+increment-turtleSpeed*timer), 147, 33, 25); //carOne
+				else if ((Math.floor(timer*4))%9 == 2 )
+				ctx.drawImage(img, 94, 406, 33, 25, (turtle1[0]+j+k+increment-turtleSpeed*timer), 147, 33, 25); //carOne
+				else if ((Math.floor(timer*4))%9 == 3 || (Math.floor(timer*4))%9 == 8)
+				ctx.drawImage(img, 134, 406, 33, 25, (turtle1[0]+j+k+increment-turtleSpeed*timer), 147, 33, 25); //carOne
+				else if ((Math.floor(timer*4))%9 == 4 || (Math.floor(timer*4))%9 == 7)
+				ctx.drawImage(img, 174, 406, 33, 25, (turtle1[0]+j+k+increment-turtleSpeed*timer), 147, 33, 25); //carOne
+				
+			}
+			turtleDimensions[i]=[(turtle1[0]+k+increment-turtleSpeed*timer), 147, 68, 25];
+		}
+		
+		i++;
+	}
+
 }
 
 function carCollision()
@@ -391,33 +519,181 @@ function carCollision()
 	for (i = 0; i<15; i++) {
 		if (frog_x<carDimensions[i][0] && frog_x+frogWidth > carDimensions[i][0]) {
 			if (frog_y>carDimensions[i][1] && frog_y+frogLength < carDimensions[i][1]+carDimensions[i][3])
-				frogDeath(i + "CASE 1");	
+				frogDeath();	
 			else if (frog_y<carDimensions[i][1] && frog_y+frogLength>carDimensions[i][1])
-				frogDeath(i +"CASE 2");
+				frogDeath();
 			else if (frog_y<carDimensions[i][1]+carDimensions[i][3] && frog_y+frogLength>carDimensions[i][1]+carDimensions[i][3])
-				frogDeath(i+"CASE 3");
+				frogDeath();
 		}
 		else if (frog_x>carDimensions[i][0] && frog_x+frogWidth < carDimensions[i][0]+carDimensions[i][2]) {
 			if (frog_y>carDimensions[i][1] && frog_y+frogLength < carDimensions[i][1]+carDimensions[i][3])
-				frogDeath(i+"CASE 4");	
+				frogDeath();	
 			else if (frog_y<carDimensions[i][1] && frog_y+frogLength>carDimensions[i][1])
-				frogDeath(i+"CASE 5");
+				frogDeath();
 			else if (frog_y<carDimensions[i][1]+carDimensions[i][3] && frog_y+frogLength>carDimensions[i][1]+carDimensions[i][3])
-				frogDeath(i+"CASE 6");
+				frogDeath();
 		}
 		else if (frog_x<carDimensions[i][0]+carDimensions[i][2] && frog_x+frogWidth > carDimensions[i][0]+carDimensions[i][2]) {
 			if (frog_y>carDimensions[i][1] && frog_y+frogLength < carDimensions[i][1]+carDimensions[i][3])
-				frogDeath(i+"CASE 7");	
+				frogDeath();	
 			else if (frog_y<carDimensions[i][1] && frog_y+frogLength>carDimensions[i][1])
-				frogDeath(i+"CASE 8");
+				frogDeath();
 			else if (frog_y<carDimensions[i][1]+carDimensions[i][3] && frog_y+frogLength>carDimensions[i][1]+carDimensions[i][3])
-				frogDeath(i+"CASE 9");
+				frogDeath();
 		}
 	}
 }
 
-function frogDeath(string)
+function onLogCheck()
+{
+	i = 0;
+	logging=false;
+	if (!moving) {
+	while (!logging && i<9) {
+		if (frog_x<logDimensions[i][0] && frog_x+frogWidth > logDimensions[i][0]) {
+			if (frog_y>logDimensions[i][1] && frog_y+frogLength < logDimensions[i][1]+logDimensions[i][3])
+				moveOnLog(i);
+			else if (frog_y<logDimensions[i][1] && frog_y+frogLength>logDimensions[i][1])
+				moveOnLog(i);
+			else if (frog_y<logDimensions[i][1]+logDimensions[i][3] && frog_y+frogLength>logDimensions[i][1]+logDimensions[i][3])
+				moveOnLog(i);
+		}
+		else if (frog_x>logDimensions[i][0] && frog_x+frogWidth < logDimensions[i][0]+logDimensions[i][2]) {
+			if (frog_y>logDimensions[i][1] && frog_y+frogLength < logDimensions[i][1]+logDimensions[i][3])
+				moveOnLog(i);
+			else if (frog_y<logDimensions[i][1] && frog_y+frogLength>logDimensions[i][1])
+				moveOnLog(i);
+			else if (frog_y<logDimensions[i][1]+logDimensions[i][3] && frog_y+frogLength>logDimensions[i][1]+logDimensions[i][3])
+				moveOnLog(i);
+		}
+		else if (frog_x<logDimensions[i][0]+logDimensions[i][2] && frog_x+frogWidth > logDimensions[i][0]+logDimensions[i][2]) {
+			if (frog_y>logDimensions[i][1] && frog_y+frogLength < logDimensions[i][1]+logDimensions[i][3])
+				moveOnLog(i);	
+			else if (frog_y<logDimensions[i][1] && frog_y+frogLength>logDimensions[i][1])
+				moveOnLog(i);
+			else if (frog_y<logDimensions[i][1]+logDimensions[i][3] && frog_y+frogLength>logDimensions[i][1]+logDimensions[i][3])
+				moveOnLog(i);
+		}
+		
+	i++;
+	}
+	}
+}
+
+function onTurtleCheck()
+{
+	i = 0;
+	turtling=false;
+	if (!moving) {
+	while (!turtling && i<9) {
+		if (frog_x<turtleDimensions[i][0] && frog_x+frogWidth > turtleDimensions[i][0]) {
+			if (frog_y>turtleDimensions[i][1] && frog_y+frogLength < turtleDimensions[i][1]+turtleDimensions[i][3])
+				moveOnTurtle();
+			else if (frog_y<turtleDimensions[i][1] && frog_y+frogLength>turtleDimensions[i][1])
+				moveOnTurtle();
+			else if (frog_y<turtleDimensions[i][1]+turtleDimensions[i][3] && frog_y+frogLength>turtleDimensions[i][1]+turtleDimensions[i][3])
+				moveOnTurtle();
+		}
+		else if (frog_x>turtleDimensions[i][0] && frog_x+frogWidth < turtleDimensions[i][0]+turtleDimensions[i][2]) {
+			if (frog_y>turtleDimensions[i][1] && frog_y+frogLength < turtleDimensions[i][1]+turtleDimensions[i][3])
+				moveOnTurtle();
+			else if (frog_y<turtleDimensions[i][1] && frog_y+frogLength>turtleDimensions[i][1])
+				moveOnTurtle();
+			else if (frog_y<turtleDimensions[i][1]+turtleDimensions[i][3] && frog_y+frogLength>turtleDimensions[i][1]+turtleDimensions[i][3])
+				moveOnTurtle();
+		}
+		else if (frog_x<turtleDimensions[i][0]+turtleDimensions[i][2] && frog_x+frogWidth > turtleDimensions[i][0]+turtleDimensions[i][2]) {
+			if (frog_y>turtleDimensions[i][1] && frog_y+frogLength < turtleDimensions[i][1]+turtleDimensions[i][3])
+				moveOnTurtle();	
+			else if (frog_y<turtleDimensions[i][1] && frog_y+frogLength>turtleDimensions[i][1])
+				moveOnTurtle();
+			else if (frog_y<turtleDimensions[i][1]+turtleDimensions[i][3] && frog_y+frogLength>turtleDimensions[i][1]+turtleDimensions[i][3])
+				moveOnTurtle();
+		}
+	if (((Math.floor(timer*4))%9 == 5 || (Math.floor(timer*4))%9 == 6) && turtling==true && (i==4 || i== 5))
+		frogDeath();
+	i++;
+	}
+	}
+}
+
+function moveOnLog(whichLog)
+{
+	logging = true;
+	if(whichLog<=2)
+		frog_x+=logOneSpeed/delay;
+	else if (whichLog<=5)
+		frog_x+=logTwoSpeed/delay;
+	else
+		frog_x+=logThreeSpeed/delay;
+}
+
+function moveOnTurtle()
+{
+	turtling = true;
+	frog_x-=turtleSpeed/delay;
+}
+
+function victoryCheck()
+{
+	var i = 0;
+	if (progressUp==12 && !moving) {
+		while (i<5 && !victory) {
+			if ((frog_x > 5+84*i) && (frog_x<30+84*i))
+				victory=true;
+				winLocation = i;
+			i++;
+		}
+	}
+}
+
+function frogDeath()
 {
 	death=true;
+}
+
+function victoryHelper()
+{
+	
+	if (victoryTime==0) {
+		victoryLocx=frog_x;
+		victoryLocy=frog_y;
+	}
+
+	if (victoryTime%8<2)
+		ctx.drawImage(img, 11, 368, 26, 21, victoryLocx, victoryLocy, 23, 26);
+	else if (victoryTime%8<4)
+		ctx.drawImage(img, 11, 334, 20, 24, victoryLocx, victoryLocy, 23, 26);
+	else if (victoryTime%8<6)
+		ctx.drawImage(img, 81, 334, 24, 21, victoryLocx, victoryLocy, 23, 26);
+	else
+		ctx.drawImage(img, 79, 369, 25, 19, victoryLocx, victoryLocy, 23, 26);
+		
+	victoryTime++;
+	if(victoryTime > 16) {
+		initializeFrog();
+		victory=false;
+		victoryTime=0;
+	}	
+}
+
+function deathHelper()
+{
+	deadFrog = new Image;
+	deadFrog.src = 'assets/dead_frog.png';
+	if (death_time==0) {
+		deathLocx=frog_x;
+		deathLocy=frog_y;
+	}
+	ctx.drawImage(deadFrog,0,0,30,30, deathLocx, deathLocy, 30, 30);
+	death_time++;
+	if(death_time > 45) {
+		initializeFrog();
+		death=false;
+		death_time=0;
+		remaining_lives--;
+		if (remaining_lives==0)
+			game_over = true;
+	}
 }
 
