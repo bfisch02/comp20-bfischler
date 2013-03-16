@@ -204,23 +204,18 @@ function game_loop()
 
 function moveFrog(e) 
 {
-  var jumpSound = document.getElementById("jumpSound")
   var keyCode = e.keyCode;
   if(keyCode==38 && !incrementLeft && !incrementRight && !incrementDown) {
-  	jumpSound.Play();
   	
     incrementUp=true;
   } 
   else if(keyCode==37 && !incrementUp && !incrementRight && !incrementDown && frog_x > 5) {
- 	jumpSound.Play();
     incrementLeft = true;
   }
   else if(keyCode==39 && !incrementLeft && !incrementUp && !incrementDown && frog_x < 364.5) {
-  	jumpSound.Play();
     incrementRight = true;
   }
   else if(keyCode==40 && !incrementLeft && !incrementRight && !incrementUp && frog_y != 498.5) {
-  	jumpSound.Play();
     incrementDown = true;
   }
 }
@@ -591,10 +586,19 @@ function drawVictory(img)
 function drawFly(img)
 {
 	var flyHelper=5-victoryCount;
+	var j = 0;
+	var flyLocationAttempt;
 	if (!fly) {
-			if (Math.floor(Math.random()*1000)>985) {
+		if (Math.floor(Math.random()*1000)>985) {
 			fly=true;
-			flyLocation=Math.floor(Math.random()*flyHelper);
+			flyArray = new Array;
+			for (i = 0; i < 5; i++) {
+				if (!victorySquare[i]) {
+					flyArray[j] = i;
+					i++;
+				}
+			}
+			flyLocation = flyArray[(Math.floor(Math.random()*flyHelper))];
 		}
 	}
 	if (fly) {
