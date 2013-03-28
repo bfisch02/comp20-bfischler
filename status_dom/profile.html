@@ -19,6 +19,7 @@ function checkText(val)
 
 	localStorage[new Date().getTime()] = myMessage;
 	reload();
+<<<<<<< HEAD
 }
 
 function reload()
@@ -31,6 +32,20 @@ function reload()
 	elem.innerHTML = output;
 }
 
+=======
+}
+
+function reload()
+{
+	elem = document.getElementById("status");
+	output = "";
+	for (key in localStorage) {
+		output = "<p>" + localStorage[key] + "</p>\n" + output;
+	}
+	elem.innerHTML = output;
+}
+	
+>>>>>>> gh-pages
 function store()
 {
 	txt = document.getElementById("something").value;

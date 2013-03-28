@@ -202,7 +202,7 @@ function moveFrog(e)
 function draw_image()
 {
 	timer = timer + .03; // Helps with timing
-	
+
 	drawConstants();
     
     drawTimer();

@@ -1,0 +1,1 @@
+The updates to profile.html can be seen in my gh-pages branch. I am still having trouble merging my branches with git, so I will request assistance as soon as Spring Break is over.
