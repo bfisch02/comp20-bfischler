@@ -1,1 +1,8 @@
-My Private Repository
+COMP20: Web Programming
+Tufts University
+Department of Computer Science
+Spring 2013
+
+Overall, my favorite project in this class was Assignment 4, for which I created a working Frogger game. At first, I was only concerned with placing all the images in the right places on the board, but I quickly learned how to manipulate variables such that the game would actually function properly and look aesthetically pleasing. I think this is the first assignment that showed me how much I have grown as a web programmer from taking this class. For that reason, this is also the assignment I'm most proud of.
+
+When I entered this class, I had no web programming experience whatsoever. I had never taken a computer science class outside of COMP11, and I felt that I had a fairly insignificant role as a member of the computer science department. But this class has taught me various new languages and tools to use on the web, and I've probably learned more from completing COMP20 assignments than I've ever learned in a class up until now. The experience I gained here also enabled me to design a website for my undergraduate research, and the project was such a success that my website may actually be incorporated as part of the Aldebaran Robotics NAO software. Finally, this class has showed me that there's much more to computer science than making functions in C++. I have a lot more COMP classes to take over the next two years, and after taking this class, I can't wait to see what else there is to learn.
