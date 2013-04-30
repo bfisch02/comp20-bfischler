@@ -1,0 +1,57 @@
+
+#textbody{
+	position: relative;
+	top: 70px;
+
+	
+}
+
+.title{
+	font-size: 31px;
+	font-family: Tahoma, Geneva, sans-serif
+}
+
+.link{
+	text-align: center;
+	font-size: 14px;
+	text-decoration: none;
+	color: white;
+	font-style: italic;
+}
+
+#stationary{
+	position: fixed;
+	background-color: white;
+	opacity: 1 important;
+	z-index: 100;
+	-webkit-mask-image: -webkit-gradient(linear, left 5%, left top, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)));
+	
+	/* Note: This gradient may render differently in browsers that don't support the unprefixed gradient syntax */
+
+/* IE10 Consumer Preview */ 
+background-image: -ms-linear-gradient(top left, #FFFFFF 0%, #820000 100%);
+
+/* Mozilla Firefox */ 
+background-image: -moz-linear-gradient(top left, #FFFFFF 0%, #820000 100%);
+
+/* Opera */ 
+background-image: -o-linear-gradient(top left, #FFFFFF 0%, #820000 100%);
+
+/* Webkit (Safari/Chrome 10) */ 
+background-image: -webkit-gradient(linear, left top, right bottom, color-stop(.0, #FFFFFF), color-stop(1, #820000));
+
+/* Webkit (Chrome 11+) */ 
+background-image: -webkit-linear-gradient(top left, #FFFFFF 0%, #820000 100%);
+
+/* W3C Markup, IE10 Release Preview */ 
+background-image: linear-gradient(to bottom right, #FFFFFF 0%, #820000 100%);
+
+}
+
+#white{
+	position: fixed;
+	margin-top: -50px;
+	margin-left: 0px;
+
+}
+
