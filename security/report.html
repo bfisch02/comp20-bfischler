@@ -13,7 +13,7 @@
 <body>
 <div id="stationary">
 
-<span class="title">Security Assessment of Scorecenter<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span class="title">Security Assessment of <span class="italic">Scorecenter</span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <a class = "link" href="#introduction">Introduction</a>
 <a class = "link" href="#methodology">Methodology</a>
 <a class = "link" href="#abstract">Abstract of Findings</a>
@@ -24,38 +24,16 @@
 </div>
 <div id="textbody">
 <img id="white" src="whitediv.jpg">
+<br>
 <a name="introduction"></a><h1>Introduction</h1>
 <p>
-Scorecenter is a program that allows for the recording of highscores for all html5 games.
-adsf
-asdf
-asdf
-ads
-f
-asdfa
-dsf
-asd
-fa
-sdf
-asdfasdfasdfasd
-fa
-sdf
-as
-df
-asd
-fasdfasdfasdfa
-dfa
-sfa
-sdf
-a
-sdf
-asdfasdfasdfa
+<span class="italic">Scorecenter</span> is a web application that allows for the recording of high scores for all HTML5 games. In a given html5 game, a jQuery ".post" command can be used to post data including game title, username, score, and date, and this information is stored in a mongo database from which <span class="italic">Scorecenter</span> reads its information. The <span class="italic">Scorecenter</span> homepage contains a table that lists all the high scores that have been posted to the mongo database. <span class="italic">Scorecenter</span> also has a GET API at /highscores.json that provides the top ten scores in descending order for a given game as a JSON string. In addition, a GET API at /usersearch provides a table of scores for a given username.
 
-
+<hr>
 </p>
 <a name="methodology"></a><h1>Methodology</h1>
 <p>
-
+The <span class="italic">Scorecenter</span> homepage has been launched at <a href="http://high-scores.herokuapp.com">http://high-scores.herokuapp.com</a>, and the source code can be found at the same page. To test the security of the application, I began by visiting each page and testing the functionality of the website as any user would: I browsed the homepage, searched for specific users, and requested JSON strings. I then tried posting to the web application through my own Frogger HTML5 game, experimenting with unexpected inputs like html tags to attack the high scores page. Next, I explored the capabilities of Burp Suite, using it to intercept http requests and manipulate user input. Finally, I reviewed the application's source code to find any potential security leaks.
 </p>
 <a name="abstract"></a><h1>Abstract of Findings</h1>
 <p>
