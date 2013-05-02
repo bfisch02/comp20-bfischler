@@ -23,25 +23,80 @@
 <hr>
 </div>
 <div id="textbody">
-<img id="white" src="whitediv.jpg">
-<br>
+<!--<img id="white" src="whitediv.jpg">-->
+
+
+<p id="smallBreak"><br></p>
 <a name="introduction"></a><h1>Introduction</h1>
 <p>
-<span class="italic">Scorecenter</span> is a web application that allows for the recording of high scores for all HTML5 games. In a given html5 game, a jQuery ".post" command can be used to post data including game title, username, score, and date, and this information is stored in a mongo database from which <span class="italic">Scorecenter</span> reads its information. The <span class="italic">Scorecenter</span> homepage contains a table that lists all the high scores that have been posted to the mongo database. <span class="italic">Scorecenter</span> also has a GET API at /highscores.json that provides the top ten scores in descending order for a given game as a JSON string. In addition, a GET API at /usersearch provides a table of scores for a given username.
+<span class="italic">Scorecenter</span> is a web application that allows for the recording of high scores for all HTML5 games. In a given HTML5 game, a jQuery ".post" command can be used to post data including game title, username, score, and date, and this information is stored in a mongo database from which <span class="italic">Scorecenter</span> reads its information. The <span class="italic">Scorecenter</span> homepage contains a table that lists all the high scores that have been posted to the mongo database. <span class="italic">Scorecenter</span> also has a GET API at /highscores.json that provides the top ten scores in descending order for a given game as a JSON string. In addition, a GET API at /usersearch provides a table of scores for a given username.
 
 <hr>
 </p>
 <a name="methodology"></a><h1>Methodology</h1>
 <p>
 The <span class="italic">Scorecenter</span> homepage has been launched at <a href="http://high-scores.herokuapp.com">http://high-scores.herokuapp.com</a>, and the source code can be found at the same page. To test the security of the application, I began by visiting each page and testing the functionality of the website as any user would: I browsed the homepage, searched for specific users, and requested JSON strings. I then tried posting to the web application through my own Frogger HTML5 game, experimenting with unexpected inputs like html tags to attack the high scores page. Next, I explored the capabilities of Burp Suite, using it to intercept http requests and manipulate user input. Finally, I reviewed the application's source code to find any potential security leaks.
+<hr>
 </p>
 <a name="abstract"></a><h1>Abstract of Findings</h1>
 <p>
-
+Various security issues were discovered in the <span class="italic">Scorecenter</span> web application, and most of them stemm from either (1) faulty mongo database management or (2) lack of input sanitization. Specific security errors are outlined below.
+<ol>
+	<li class="large"> Faulty Mongo Database Management 
+		<ul>
+			<li> No more than one high score can be added to the web application without
+				 crashing the application.
+			</li>
+			<li> The web application sets "Access-Control-Allow-Origin" to "*" to enable 
+			     cross-domain ajax calls, which means that sharing is allowed with every 
+			     origin that tries to access the app.
+			</li>
+		</ul>
+		<br>
+	</li>
+	<li class="large"> Lack of Input Sanitization 
+		<ul>
+			<li> There is no input validation for user submissions into the mongo
+				 database, which means that the user can submit potentially malicious 
+				 html script tags to manipulate the layout of the web application.
+			</li>
+			<li> There is also no input validation for the /usersearch API, meaning that
+				 the user can input malicious html tags in the username textbox.
+			</li>
+			<li> There is no limit to the size of the user input, which means that the
+				 user can submit data that is large enough to destroy the layout of the
+				 high scores table, or even to crash the website if the input is long
+				 enough.
+		</ul>
+	</li>
+</ol>
+<hr>
 </p>
 <a name="issues"></a><h1>Issues Found</h1>
 <p>
-
+<ol>
+	<li class="large"> High Score Input Error
+		<ul>
+			<li> <span class="bold">Issue</span>: Faulty Mongo Database Management
+			</li>
+			<li> <span class="bold">Location</span>: submit.json 
+			</li>
+			<li> <span class="bold">Severity</span>: <span class="high">High</span> - 
+				 Anyone can crash the program simply by submitting a high score.
+			</li>
+			<li> <span class="bold">Description</span>: The first model of the <span
+				 class="italic">Scorecenter</span> web application contained an 
+				 unavoidable bug: submitting more than one high score caused the
+				 application to crash. The cause of this error was the use of a <span 
+				 class="code">db.close()</span> command that effectively closed <span 
+				 class="italic">Scorecenter</span>'s Mongo database after the first high
+				 score was submitted. This clearly proved to be a major security error, as
+				 anyone could crash the program simply by submitting one or two high 
+				 scores.
+			</li>
+		</ul>
+	</li>
+</ol>
 </p>
 <a name="conclusion"></a><h1>Conclusion</h1>
 <p>
