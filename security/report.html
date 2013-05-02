@@ -219,11 +219,11 @@ if ($_SERVER["REQUEST_TYPE"] === "OPTIONS") // special CORS track <br>
 				 follows: <br><br>
 
 <span class="code">
-var username = request.body.username;
-var username2 = "";
-for (i=0; i<10; i++)
-&nbsp;&nbsp;username2+=username[i];
-}</span>
+var username = request.body.username; <br>
+var username2 = ""; <br>
+for (i=0; i<10; i++)<br>
+&nbsp;&nbsp;username2+=username[i];<br>
+</span>
  
 			</li>
 		</ul>
@@ -233,8 +233,9 @@ for (i=0; i<10; i++)
 </p>
 <a name="conclusion"></a><h1>Conclusion</h1>
 <p>
-<span class="italic">Scorecenter</span> contains various security errors that allow users from all domains to send malicious data to its mongo database and crash the web application. 
+<span class="italic">Scorecenter</span> contains various security errors that allow users from all domains to send malicious data to the web application's Mongo database. Fortunately, all of the security leaks that have been found are easily correctable. In fact, the High Score Input Error (see <a href="#issues">Issues Found</a>), which was easily the most severe security issue, has already been fixed. That said, most of the security errors mentioned above were found through source code analysis, for Burp Suite failed to locate additional errors. For this reason, it is highly suggested that <span class="italic">Scorecenter</span>'s security be tested by other professional security tools before it is implemented as a live HTML5 high score recorder.
 </p>
+<br>
 
 
 </div>
