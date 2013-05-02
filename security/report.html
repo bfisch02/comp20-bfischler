@@ -79,7 +79,7 @@ Various security issues were discovered in the <span class="italic">Scorecenter<
 			</li>
 			<li> <span class="bold">Location</span>: submit.json 
 			</li>
-			<li> <span class="bold">Severity</span>: <span class="high">High</span> - 
+			<li> <span class="bold">Severity</span>: <span class="high">HIGH</span> - 
 				 Anyone can crash the program simply by submitting a high score.
 			</li>
 			<li> <span class="bold">Description</span>: The first model of the <span
@@ -108,14 +108,17 @@ Various security issues were discovered in the <span class="italic">Scorecenter<
 			</li>
 			<li> <span class="bold">Location</span>: submit.json 
 			</li>
-			<li> <span class="bold">Severity</span>: <span class="high">High</span> - 
+			<li> <span class="bold">Severity</span>: <span class="high">HIGH</span> - 
 				 People of all domains can make use of the /submit API
 			</li>
 			<li> <span class="bold">Description</span>: <span class="italic">Scorecenter 
 				 </span> sets "Access-Control-Allow-Origin" to "*" in order to enable 
 			     cross-domain ajax calls. Although this has the benefit of allowing
 			     any HTML5 game to access submit.json, it is a huge security risk to allow
-			     sharing with every origin that tries to access the application. 
+			     sharing with every origin that tries to access the application. Browsers
+			     have a built-in safety feature that prevents cross-domain access, but
+			     setting a universal CORS header effectively turns off this safety 
+			     feature.
 			</li>
 			<li> <span class="bold">Resolution</span>: Rather than allowing cross-domain
 				 ajax calls for all origins, it would be considerably more secure to
@@ -143,7 +146,7 @@ if ($_SERVER["REQUEST_TYPE"] === "OPTIONS") // special CORS track <br>
 			</li>
 			<li> <span class="bold">Location</span>: submit.json
 			</li>
-			<li> <span class="bold">Severity</span>: <span class="high">High</span> - 
+			<li> <span class="bold">Severity</span>: <span class="high">HIGH</span> - 
 				 Malicious script tags may be submitted into the web application.
 			</li>
 			<li> <span class="bold">Description</span>: <span class="italic"> Scorecenter 
@@ -165,11 +168,72 @@ if ($_SERVER["REQUEST_TYPE"] === "OPTIONS") // special CORS track <br>
 			</li>
 		</ul>
 	</li>
+	<br>
+	<li class="large"> No Input Validation for User Search
+		<ul>
+			<li> <span class="bold">Issue</span>: Lack of Input Validation
+			</li>
+			<li> <span class="bold">Location</span>: /usersearch
+			</li>
+			<li> <span class="bold">Severity</span>: <span class="low">LOW</span> - 
+				 The user may enter malicious script tags into the usersearch textbox, but
+				 the search results will only be seen on the user's page
+			</li>
+			<li> <span class="bold">Description</span>: <span class="italic"> Scorecenter 
+				 </span> also fails to check for special characters like brackets in the
+				 usersearch API, which means that the user can input script tags that add
+				 alerts and redirects to the page. Chrome and Safari do not allow for
+				 script requests to be made (the JavaScript console returns "<span 
+				 class="code">Refused to execute a JavaScript script. Source code of
+				 script found within request.</span>"), but Firefox does not include this
+				 protective feature.
+			</li>
+			<img id="hackPic2" src="HackPic2.png"><br>
+			<li> <span class="bold">Resolution</span>: This security issue can also be
+				 solved with JavaScript's built-in <span class="code">replace()</span>
+				 function, which can remove all brackets to prevent the use of HTML tags.
+			</li>
+		</ul>
+	</li>
+	<br> 
+	<li class="large"> No Maximum Length for User Submission
+		<ul>
+			<li> <span class="bold">Issue</span>: Lack of Input Validation
+			</li>
+			<li> <span class="bold">Location</span>: submit.json
+			</li>
+			<li> <span class="bold">Severity</span>: <span class="medium">MEDIUM</span> - 
+				 The user may theoretically crash the web application by submitting a
+				 massive amount of text in the username field.
+			</li>
+			<li> <span class="bold">Description</span>: <span class="italic"> Scorecenter 
+				 </span> does not set a maximum user input length for submissions to the 
+				 mongo database. In theory, the user could enter such a long username that
+				 the entire web application can no longer load. If nothing else, an
+				 extremely long username would throw off the layout of the high scores
+				 table at the root of the web application.
+			</li>
+			<li> <span class="bold">Resolution</span>: This security issue can be avoided
+				 by creating a new 'username2' variable that only contains the first ten 
+				 or fifteen characters of the user input. The code would appear as 
+				 follows: <br><br>
+
+<span class="code">
+var username = request.body.username;
+var username2 = "";
+for (i=0; i<10; i++)
+&nbsp;&nbsp;username2+=username[i];
+}</span>
+ 
+			</li>
+		</ul>
+	</li>
 </ol>
+<hr>
 </p>
 <a name="conclusion"></a><h1>Conclusion</h1>
 <p>
-
+<span class="italic">Scorecenter</span> contains various security errors that allow users from all domains to send malicious data to its mongo database and crash the web application. 
 </p>
 
 
