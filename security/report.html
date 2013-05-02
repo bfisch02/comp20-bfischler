@@ -23,8 +23,6 @@
 <hr>
 </div>
 <div id="textbody">
-<!--<img id="white" src="whitediv.jpg">-->
-
 
 <p id="smallBreak"><br></p>
 <a name="introduction"></a><h1>Introduction</h1>
@@ -135,6 +133,35 @@ if ($_SERVER["REQUEST_TYPE"] === "OPTIONS") // special CORS track <br>
 &nbsp;&nbsp;exit; // no need to do anything else for OPTION request   <br>
 }</span>
 
+			</li>
+		</ul>
+	</li>
+	<br>
+	<li class="large"> No Input Validation for User Submission
+		<ul>
+			<li> <span class="bold">Issue</span>: Lack of Input Validation
+			</li>
+			<li> <span class="bold">Location</span>: submit.json
+			</li>
+			<li> <span class="bold">Severity</span>: <span class="high">High</span> - 
+				 Malicious script tags may be submitted into the web application.
+			</li>
+			<li> <span class="bold">Description</span>: <span class="italic"> Scorecenter 
+				 </span> fails to check for special characters like brackets in user
+				 submissions, which means that the user can easily add script tags that
+				 riddle the root of the web application with annoying alerts and page 
+				 redirects. For example, if a username of <span class="code">
+				 &#60;script&#62;while(1){alert("Hello!");}&#60;/script&#62;</span>
+				 is submitted, <span class="italic"> Scorecenter</span>'s root page will
+				 load with an infinite loop of "Hello!" alerts.
+			</li>
+			<img id="hackPic1" src="HackPic1.png"><br>
+			<li> <span class="bold">Resolution</span>: JavaScript has a built in <span
+				 class="code">replace()</span> function that can be used to rid user
+				 input of all HTML tags. If <span class="code">
+				 username=username.replace(/&#60;/g, "");</span> is added to the
+				 submit.json API, all open brackets will be removed, thereby preventing
+				 the insertion of malicious HTML tags into the web app.
 			</li>
 		</ul>
 	</li>
