@@ -1,1 +1,3 @@
-HELLO
+Assignment 6 took approximately 15 hours to complete. One third of the time was spent formatting the report, while the rest of the time was devoted to finding security errors and attempting to learn the intricacies of Burp Suite.
+
+As I mentioned in a recent e-mail, I didn't realize that the commits were supposed to be in the gh-pages branch as well as the master branch, so I spent the first half of the assignment exclusively working in the master branch. I then tried to switch to gh-pages, but report.html and report.css were not there, and I feared that making new files and merging would delete all commits I had made up until that point. For this reason, I did completed the entire assignment in my master branch.
