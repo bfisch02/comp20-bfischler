@@ -40,9 +40,9 @@ The <span class="italic">Scorecenter</span> homepage has been launched at <a hre
 </p>
 <a name="abstract"></a><h1>Abstract of Findings</h1>
 <p>
-Various security issues were discovered in the <span class="italic">Scorecenter</span> web application, and most of them stemm from either (1) faulty mongo database management or (2) lack of input sanitization. Specific security errors are outlined below.
+Various security issues were discovered in the <span class="italic">Scorecenter</span> web application, and most of them stem from either (1) faulty mongo database management and web protection or (2) lack of input sanitization. Specific security errors are outlined below.
 <ol>
-	<li class="large"> Faulty Mongo Database Management 
+	<li class="large"> Faulty Mongo Database Management / Web Protection
 		<ul>
 			<li> No more than one high score can be added to the web application without
 				 crashing the application.
@@ -93,6 +93,48 @@ Various security issues were discovered in the <span class="italic">Scorecenter<
 				 score was submitted. This clearly proved to be a major security error, as
 				 anyone could crash the program simply by submitting one or two high 
 				 scores.
+			</li>
+			<li> <span class="bold">Resolution</span>: Simply removing the <span 
+				 class="code">db.close()</span> command was enough to fix this security
+				 error. The <span class="italic">Scorecenter</span> creator made this
+				 change immediately, so as to fulfill the requirements of a previous
+				 assignment.
+			</li>
+		</ul>
+	</li>
+	<br> 
+	<li class="large"> Enabled Cross-Domain Ajax Calls for All Domains 
+		<ul>
+			<li> <span class="bold">Issue</span>: Faulty Mongo Database Management / Web
+				 Protection
+			</li>
+			<li> <span class="bold">Location</span>: submit.json 
+			</li>
+			<li> <span class="bold">Severity</span>: <span class="high">High</span> - 
+				 People of all domains can make use of the /submit API
+			</li>
+			<li> <span class="bold">Description</span>: <span class="italic">Scorecenter 
+				 </span> sets "Access-Control-Allow-Origin" to "*" in order to enable 
+			     cross-domain ajax calls. Although this has the benefit of allowing
+			     any HTML5 game to access submit.json, it is a huge security risk to allow
+			     sharing with every origin that tries to access the application. 
+			</li>
+			<li> <span class="bold">Resolution</span>: Rather than allowing cross-domain
+				 ajax calls for all origins, it would be considerably more secure to
+				 include an array of allowed domains, and then to only allow cross-domain
+				 sharing if the calling domain falls in the list of allowed domains. The
+				 code for this procedure would look as follows: <br><br>
+				 
+<span class="code">
+if ($_SERVER["REQUEST_TYPE"] === "OPTIONS") // special CORS track <br>
+{ <br>
+&nbsp;&nbsp;$allowed_domains = array("..."); // Allowed domains listed in quotes <br>
+&nbsp;&nbsp;$calling_domain = get_calling_domain($_SERVER); <br>
+&nbsp;&nbsp;if (in_array($calling_domain, $allowed_domains)) <br>
+&nbsp;&nbsp;&nbsp;&nbsp;header("Access-Control-Allow-Origin: " . $calling_domain); <br>
+&nbsp;&nbsp;exit; // no need to do anything else for OPTION request   <br>
+}</span>
+
 			</li>
 		</ul>
 	</li>
